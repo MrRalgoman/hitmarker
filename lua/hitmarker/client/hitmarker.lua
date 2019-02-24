@@ -20,23 +20,69 @@ drawBar(Number offset, Number length, Number width, Number type)
 ]]--------------------------------------------------------------
 local function drawBar(offset, length, width, type)
 	local scrW, scrH = ScrW(), ScrH() -- if cached, won't update with screen res change
-				--drawBar(-o, -l, w, 1)
-	local topLeftbotRight = {
-		{ x = ((scrW / 2) + offset + length) + -width/2, y = ((scrH / 2) + offset + length) + width/2 },
-		{ x = ((scrW / 2) + offset + length) + width/2, y = ((scrH / 2) + offset + length) + -width/2 },
-		{ x = ((scrW / 2) + offset + width) + width/2, y = ((scrH / 2) + offset + width) + -width/2 },
-		{ x = ((scrW / 2) + offset + width) + -width/2, y = ((scrH / 2) + offset + width) + width/2 }
+
+	local topLeftBotRight = {
+		{ x = (scrW / 2) + offset + length + -width/2,
+		  y = (scrH / 2) + offset + length + width/2 },
+		{ x = (scrW / 2) + offset + length + width/2,
+		  y = (scrH / 2) + offset + length - width/2 },
+		{ x = (scrW / 2) + offset + width + width/2,
+		  y = (scrH / 2) + offset + width - width/2 },
+		{ x = (scrW / 2) + offset + width + -width/2,
+		  y = (scrH / 2) + offset + width + width/2 }
 	}
 	local topRightBotLeft = {
-		{ x = ((scrW / 2) + offset + width) + -width/2, y = ((scrH / 2) + offset + width) + width/2 },
-		{ x = ((scrW / 2) + offset + width) + width/2, y = ((scrH / 2) + offset + width) + -width/2 },
-		{ x = ((scrW / 2) + offset + length) + width/2, y = ((scrH / 2) + offset + length) + -width/2 },
-		{ x = ((scrW / 2) + offset + length) + -width/2, y = ((scrH / 2) + offset + length) + width/2 }
+		{ x = (scrW / 2) + offset + width + width/2,
+		  y = (scrH / 2) - offset - width + width/2 },
+		{ x = (scrW / 2) + offset + length + width/2,
+		  y = (scrH / 2) - offset - length + width/2 },
+		{ x = (scrW / 2) + offset + length + -width/2,
+		  y = (scrH / 2) - offset - length - width/2 },
+		{ x = (scrW / 2) + offset + width + -width/2,
+		  y = (scrH / 2) - offset - width - width/2 }
 	}
 
 	if (type == 1) then
 		draw.NoTexture()
-		surface.DrawPoly(topLeftbotRight)
+		surface.DrawPoly(topLeftBotRight)
+	elseif (type == 2) then
+		draw.NoTexture()
+		surface.DrawPoly(topRightBotLeft)
+	end
+end
+
+--[[------------------------------------------------------------------------------------
+drawBarOutline(Number offset, Number length, Number width, Number type, Number outline)
+	Draws a specific bar in the hitmarker
+	type 1: topLeftBotRight type2: topRightBotLeft
+]]--------------------------------------------------------------------------------------
+local function drawBarOutline(offset, length, width, type, outline)
+	local scrW, scrH = ScrW(), ScrH() -- if cached, won't update with screen res change
+
+	local topLeftBotRight = {
+		{ x = (scrW / 2) + offset + length + -width/2 - outline,
+		  y = (scrH / 2) + offset + length + width/2 },
+		{ x = (scrW / 2) + offset + length + width/2,
+		  y = (scrH / 2) + offset + length - width/2 - outline },
+		{ x = (scrW / 2) + offset + width + width/2 + outline,
+		  y = (scrH / 2) + offset + width - width/2 },
+		{ x = (scrW / 2) + offset + width + -width/2,
+		  y = (scrH / 2) + offset + width + width/2 + outline }
+	}
+	local topRightBotLeft = {
+		{ x = (scrW / 2) + offset + width + width/2 + outline,
+		  y = (scrH / 2) - offset - width + width/2 },
+		{ x = (scrW / 2) + offset + length + width/2,
+		  y = (scrH / 2) - offset - length + width/2 + outline },
+		{ x = (scrW / 2) + offset + length - width/2 - outline,
+		  y = (scrH / 2) - offset - length - width/2 },
+		{ x = (scrW / 2) + offset + width - width/2,
+		  y = (scrH / 2) - offset - width - width/2 - outline }
+	}
+
+	if (type == 1) then
+		draw.NoTexture()
+		surface.DrawPoly(topLeftBotRight)
 	elseif (type == 2) then
 		draw.NoTexture()
 		surface.DrawPoly(topRightBotLeft)
@@ -49,22 +95,21 @@ drawHit()
 ]]-------------------
 local function drawHit()
 	local drawInfo = LocalPlayer().hitProfile
-	local scrW, scrH = ScrW(), ScrH() -- if cached, won't update with screen res change
-	
-	local l, w, o =  drawInfo:GetLength(), drawInfo:GetWidth(), drawInfo:GetCenterOffset()
+	local l, w, o, ot =  drawInfo:GetLength(), drawInfo:GetWidth(), drawInfo:GetCenterOffset(),
+		drawInfo:GetOutlineThickness()
 
-	-- local rect = {
-	-- 	{ x = ((scrW / 2) - o - l) + -w/2, y = ((scrH / 2) - o - l) + w/2 },
-	-- 	{ x = ((scrW / 2) - o - l) + w/2, y = ((scrH / 2) - o - l) + -w/2 },
-	-- 	{ x = ((scrW / 2) - o - w) + w/2, y = ((scrH / 2) - o - w) + -w/2 },
-	-- 	{ x = ((scrW / 2) - o - w) + -w/2, y = ((scrH / 2) - o - w) + w/2 }
-	-- }
+	surface.SetDrawColor(drawInfo:GetOutlineColor())
+	print(drawInfo:GetOutlineColor())
+	drawBarOutline(o, l, -w, 1, -ot) -- lower right
+	drawBarOutline(-o, -l, w, 1, ot) -- upper left
+	drawBarOutline(o, l, -w, 2, -ot) -- lower right
+	drawBarOutline(-o, -l, w, 2, ot) -- upper left
+
 	surface.SetDrawColor(drawInfo:GetColor())
-	--drawBar(o, l, -w, 1) -- lower right
+	drawBar(o, l, -w, 1) -- lower right
 	drawBar(-o, -l, w, 1) -- upper left
 	drawBar(o, l, -w, 2) -- lower right
 	drawBar(-o, -l, w, 2) -- upper left
-
 end
 
 --[[--------------------------------------------------------------
@@ -79,20 +124,19 @@ local function whenShouldDrawHit(msgLen)
 	local wasHeadshot = net.ReadBool() -- get if it was a headshot
 	-- eventually check if it was a kill shot
 
-	LocalPlayer().hitProfile:SetWasHeadshot(wasHeadshot) -- update hitprofile
-
-	timer.Simple(0.2, function() shouldDrawHit = false end) -- add to config
+	if (not timer.Exists("hitmarker_hitlast")) then
+		timer.Create("hitmarker_hitlast", 0.2, 1, function() shouldDrawHit = false end) end -- add to config
 end
 net.Receive("hitmarker_when_hit", whenShouldDrawHit)
 
 --[[----------------------------------------------------
 plyDraw()
-	LocalPlayer's draw hook, here we draw the hitmarkers
+	LocalPlayer's draw hook, here we draw the hitmarker
 	when needed
 ]]------------------------------------------------------
 local function plyDraw()
-	--if (shouldDrawHit) then
+	if (shouldDrawHit) then
 		drawHit()
-	--end
+	end
 end
 hook.Add("HUDPaint", "hitmarker_draw_hits", plyDraw)
