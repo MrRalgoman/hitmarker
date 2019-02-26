@@ -3,15 +3,21 @@ loadHitProfile()
 	Initializes a hitprofile object on the LocalPlayer
 ]]----------------------------------------------------
 local function loadHitProfile()
-	LocalPlayer().hitProfile = _hm.HitProfile()
+	LocalPlayer().normHit = _hm.NormalShotProfile()
+	LocalPlayer().headHit = _hm.HeadShotProfile()
+	LocalPlayer().killHit = _hm.KillShotProfile()
 end
 hook.Add("InitPostEntity", "hitmarker_init_ply_hitprofile", loadHitProfile)
 
-LocalPlayer().hitProfile = _hm.HitProfile()
+LocalPlayer().normHit = _hm.NormalShotProfile() -- comment this shit out later
+LocalPlayer().headHit = _hm.HeadShotProfile()
+LocalPlayer().killHit = _hm.KillShotProfile()
 
---[[ global file var to track when we should actually
- 	 be drawing a hitmarker ]]
+--[[ global file vars to track when we should actually
+ 	 be drawing a hitmarker and if it was headshot/killshot ]]
 local shouldDrawHit = false
+local wasHeadshot = false
+local wasKillShot = false
 
 --[[------------------------------------------------------------
 drawBar(Number offset, Number length, Number width, Number type)
@@ -94,7 +100,14 @@ drawHit()
 	draws a hitmarker
 ]]-------------------
 local function drawHit()
-	local drawInfo = LocalPlayer().hitProfile
+	local drawInfo = LocalPlayer().normHit
+
+	if (wasHeadshot) then
+		drawInfo = LocalPlayer().headHit end
+
+	if (wasKillshot) then
+		drawInfo = LocalPlayer().killHit end-- want this to override all other hits
+
 	local l, w, o, ot =  drawInfo:GetLength(), drawInfo:GetWidth(), drawInfo:GetCenterOffset(),
 		drawInfo:GetOutlineThickness()
 
@@ -121,11 +134,17 @@ local function whenShouldDrawHit(msgLen)
 	shouldDrawHit = true
 
 	local dmgAmount = net.ReadInt(6) -- get damage amount
-	local wasHeadshot = net.ReadBool() -- get if it was a headshot
-	-- eventually check if it was a kill shot
+	wasHeadshot = net.ReadBool() -- get if it was a headshot
+	wasKillshot = net.ReadBool()
 
 	if (not timer.Exists("hitmarker_hitlast")) then
-		timer.Create("hitmarker_hitlast", 0.2, 1, function() shouldDrawHit = false end) end -- add to config
+		timer.Create("hitmarker_hitlast", 0.2, 1, 
+		function()
+			shouldDrawHit = false
+			wasHeadshot = false
+			wasKillShot = false
+		end) 
+	end -- add to config
 end
 net.Receive("hitmarker_when_hit", whenShouldDrawHit)
 

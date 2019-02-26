@@ -6,8 +6,6 @@ AccessorFunc(HitProfile, "length", "Length", FORCE_NUMBER)
 AccessorFunc(HitProfile, "center_offset", "CenterOffset", FORCE_NUMBER)
 AccessorFunc(HitProfile, "outline_thickness", "OutlineThickness")
 AccessorFunc(HitProfile, "outline", "Outline", FORCE_BOOL)
-AccessorFunc(HitProfile, "was_kill", "WasKill", FORCE_BOOL)
-AccessorFunc(HitProfile, "was_headshot", "WasHeadshot", FORCE_BOOL)
 
 function HitProfile:SetColor(...)
 	local args = {...}
@@ -41,11 +39,12 @@ function HitProfile:GetOutlineColor()
 	return self.outline_color or Color(0, 0, 0, 255)
 end
 
---[[-------------------------------------------------------
-_hm.HitProfile()
-	HitProfile constructor
----------------------------------------------------------]]
-function _hm.HitProfile()
+
+--[[-------------------------------
+_hm.NormalShotProfile()
+	Normal shot profile constructor
+]]---------------------------------
+function _hm.NormalShotProfile()
 	local this = table.Copy(HitProfile)
 
 	this:SetWidth(1.5) -- 1.5
@@ -53,9 +52,30 @@ function _hm.HitProfile()
 	this:SetCenterOffset(6) -- 6
 	this:SetOutlineThickness(2)
 	this:SetOutline(true)
-	this:SetWasKill(false)
-	this:SetWasHeadshot(false)
-	this:SetColor()
+	this:SetColor() -- default white
+
+	return this
+end
+--[[--------------------------------------------------------
+_hm.HeadShotProfile()
+	Head shot profile constructor - Just changes color/sound
+---------------------------------------------------------]]
+function _hm.HeadShotProfile()
+	local this = _hm.NormalShotProfile()
+
+	this:SetColor(235, 244, 66) -- yellow
+
+	return this
+end
+
+--[[--------------------------------------------------------
+_hm.KillShotProfile()
+	Kill shot profile constructor - just changes color/sound
+]]----------------------------------------------------------
+function _hm.KillShotProfile()
+	local this = _hm.NormalShotProfile()
+
+	this:SetColor(145, 27, 27) -- dark red
 
 	return this
 end
