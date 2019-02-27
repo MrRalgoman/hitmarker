@@ -41,15 +41,13 @@ DmgNumProfile:Draw( Number x, Number y )
 	draws the damage
 ]]--------------------------------------
 function DmgNumProfile:Draw(x, y)
-	pos = Vector(ScrW() / 2, ScrH() / 2) -- change later
-
 	if (self:GetOutline()) then
-		draw.SimpleTextOutlined(self:GetDmgAmount(), "hitmarker_16", x, y,
-			self:GetColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+		draw.SimpleTextOutlined(self:GetDmgAmount(), "hitmarker_" .. self:GetSize(),
+			x, y, self:GetColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
 			self:GetOutlineThickness(), self:GetOutlineColor())
 	else
-		draw.SimpleText(self:GetDmgAount(), "hitmarker_16", x, y, self:GetColor(),
-			TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(self:GetDmgAount(), "hitmarker_" .. self:GetSize(), x, y,
+			self:GetColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 end
 
@@ -78,7 +76,7 @@ function _hm.DmgNumProfile(amount)
 
 	this:SetOutline(true)
 	this:SetDmgAmount(amount or 0)
-	this:SetSize(20)
+	this:SetSize(24)
 	this:SetOutlineThickness(2)
 	this:SetColor()
 	this:SetOutlineColor()
