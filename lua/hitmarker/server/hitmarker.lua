@@ -17,9 +17,6 @@ local function shouldDrawHit(victim, damage)
 		if ((victim:Health() - damage:GetDamage()) < 0) then
 			wasKillshot = true end -- check if was a killshot
 
-		print("Was Headshot: " .. tostring(wasHeadshot))
-		print("Was Killshot: " .. tostring(wasKillshot))
-
 		net.Start("hitmarker_when_hit")
 			net.WriteInt(dmgAmount, 6) -- send damage amount
 			net.WriteBool(wasHeadshot) -- send if it was a heashot

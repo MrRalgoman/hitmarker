@@ -1,29 +1,32 @@
---[[--------------------------------------------------
-loadHitProfile()
-	Initializes a hitprofile object on the LocalPlayer
-]]----------------------------------------------------
-local function loadHitProfile()
-	LocalPlayer().normHit = _hm.NormalShotProfile()
-	LocalPlayer().headHit = _hm.HeadShotProfile()
-	LocalPlayer().killHit = _hm.KillShotProfile()
-end
-hook.Add("InitPostEntity", "hitmarker_init_ply_hitprofile", loadHitProfile)
-
-LocalPlayer().normHit = _hm.NormalShotProfile() -- comment this shit out later
-LocalPlayer().headHit = _hm.HeadShotProfile()
-LocalPlayer().killHit = _hm.KillShotProfile()
-
 --[[ global file vars to track when we should actually
  	 be drawing a hitmarker and if it was headshot/killshot ]]
 local shouldDrawHit = false
 local wasHeadshot = false
 local wasKillShot = false
+local dmgAmounts = {} -- will keep track of current dmg amounts to display
 
---[[------------------------------------------------------------
-drawBar(Number offset, Number length, Number width, Number type)
+--[[--------------------------------------------------
+loadHitProfiles( )
+	Initializes a hitprofile object on the LocalPlayer
+]]----------------------------------------------------
+local function loadHitProfiles()
+	LocalPlayer()._normHit = _hm.NormalShotProfile()
+	LocalPlayer()._headHit = _hm.HeadShotProfile()
+	LocalPlayer()._killHit = _hm.KillShotProfile()
+	LocalPlayer()._dmgProfle = _hm.dmgNumProfile()
+end
+hook.Add("InitPostEntity", "hitmarker_init_ply_hitprofile", loadHitProfiles)
+LocalPlayer()._normHit = _hm.NormalShotProfile() -- delete this shit later
+LocalPlayer()._headHit = _hm.HeadShotProfile() -- delete this shit later
+LocalPlayer()._killHit = _hm.KillShotProfile() -- delete this shit later
+LocalPlayer()._dmgProfle = _hm.DmgNumProfile() -- delet this shit later
+
+
+--[[--------------------------------------------------------------
+drawBar( Number offset, Number length, Number width, Number type )
 	Draws a specific bar in the hitmarker
 	type 1: topLeftBotRight type2: topRightBotLeft
-]]--------------------------------------------------------------
+]]----------------------------------------------------------------
 local function drawBar(offset, length, width, type)
 	local scrW, scrH = ScrW(), ScrH() -- if cached, won't update with screen res change
 
@@ -57,11 +60,11 @@ local function drawBar(offset, length, width, type)
 	end
 end
 
---[[------------------------------------------------------------------------------------
-drawBarOutline(Number offset, Number length, Number width, Number type, Number outline)
+--[[-------------------------------------------------------------------------------------
+drawBarOutline( Number offset, Number length, Number width, Number type, Number outline )
 	Draws a specific bar in the hitmarker
 	type 1: topLeftBotRight type2: topRightBotLeft
-]]--------------------------------------------------------------------------------------
+]]---------------------------------------------------------------------------------------
 local function drawBarOutline(offset, length, width, type, outline)
 	local scrW, scrH = ScrW(), ScrH() -- if cached, won't update with screen res change
 
@@ -96,37 +99,45 @@ local function drawBarOutline(offset, length, width, type, outline)
 end
 
 --[[-----------------
-drawHit()
+drawHit(  )
 	draws a hitmarker
 ]]-------------------
 local function drawHit()
-	local drawInfo = LocalPlayer().normHit
+	local drawInfo = LocalPlayer()._normHit
 
 	if (wasHeadshot) then
-		drawInfo = LocalPlayer().headHit end
+		drawInfo = LocalPlayer()._headHit end
 
 	if (wasKillshot) then
-		drawInfo = LocalPlayer().killHit end-- want this to override all other hits
+		drawInfo = LocalPlayer()._killHit end-- want this to override all other hits
 
 	local l, w, o, ot =  drawInfo:GetLength(), drawInfo:GetWidth(), drawInfo:GetCenterOffset(),
 		drawInfo:GetOutlineThickness()
 
 	surface.SetDrawColor(drawInfo:GetOutlineColor())
-	print(drawInfo:GetOutlineColor())
 	drawBarOutline(o, l, -w, 1, -ot) -- lower right
 	drawBarOutline(-o, -l, w, 1, ot) -- upper left
 	drawBarOutline(o, l, -w, 2, -ot) -- lower right
 	drawBarOutline(-o, -l, w, 2, ot) -- upper left
 
-	surface.SetDrawColor(drawInfo:GetColor())
 	drawBar(o, l, -w, 1) -- lower right
 	drawBar(-o, -l, w, 1) -- upper left
 	drawBar(o, l, -w, 2) -- lower right
 	drawBar(-o, -l, w, 2) -- upper left
+
+	for _, dmgTable in pairs(dmgAmounts) do -- THIS ISNT WORKING START HERE
+		dmgTable[2] = dmgTable[2] + (1 / 4)
+		local x = dmgTable[2]
+
+		-- want it follow a parabolic motion in 2nd quandrant
+		dmgTable[1]:Draw(
+			x, -- x
+			(x * x) / 50)  -- y = (x^2) / 50
+	end
 end
 
 --[[--------------------------------------------------------------
-whenShouldDrawHit(Number msgLen)
+whenShouldDrawHit( Number msgLen )
 	Toggles shouldDrawHit boolean when called, also builds part of
 	the HitProfile used in drawHit function
 ]]----------------------------------------------------------------
@@ -135,21 +146,29 @@ local function whenShouldDrawHit(msgLen)
 
 	local dmgAmount = net.ReadInt(6) -- get damage amount
 	wasHeadshot = net.ReadBool() -- get if it was a headshot
-	wasKillshot = net.ReadBool()
+	wasKillshot = net.ReadBool() -- get if it was a killshot
+	-- the number in the table is an xpos we need to track for each individual dmg profile
+	table.insert(dmgAmounts, 1, { _hm.DmgNumProfile(dmgAmount), 0 }) -- insert front
+
 
 	if (not timer.Exists("hitmarker_hitlast")) then
-		timer.Create("hitmarker_hitlast", 0.2, 1, 
+		timer.Create("hitmarker_hitlast", 0.2, 1, -- add to config
 		function()
 			shouldDrawHit = false
 			wasHeadshot = false
 			wasKillShot = false
-		end) 
-	end -- add to config
+		end)
+	end
+
+	timer.Simple(0.2, -- we want this timer to be called everytime
+	function()		  -- a dmgAmount is inserted so that it can also
+		table.remove(dmgAmounts, #dmgAmounts) -- be removed (pop back)
+	end)
 end
 net.Receive("hitmarker_when_hit", whenShouldDrawHit)
 
 --[[----------------------------------------------------
-plyDraw()
+plyDraw( )
 	LocalPlayer's draw hook, here we draw the hitmarker
 	when needed
 ]]------------------------------------------------------

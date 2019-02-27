@@ -4,9 +4,9 @@ local HitProfile = {}
 AccessorFunc(HitProfile, "width", "Width", FORCE_NUMBER)
 AccessorFunc(HitProfile, "length", "Length", FORCE_NUMBER)
 AccessorFunc(HitProfile, "center_offset", "CenterOffset", FORCE_NUMBER)
-AccessorFunc(HitProfile, "outline_thickness", "OutlineThickness")
+AccessorFunc(HitProfile, "outline_thickness", "OutlineThickness", FORCE_NUMBER)
 AccessorFunc(HitProfile, "outline", "Outline", FORCE_BOOL)
-
+-- get/set color
 function HitProfile:SetColor(...)
 	local args = {...}
 
@@ -18,11 +18,10 @@ function HitProfile:SetColor(...)
 	self.color = Color(args[1] or 255, args[2] or 255,
 		args[3] or 255, args[4] or 255)
 end
-
 function HitProfile:GetColor()
 	return self.color or Color(255, 255, 255, 255)
 end
-
+-- get/set outline color
 function HitProfile:SetOutlineColor(...)
 	local args = {...}
 
@@ -34,16 +33,14 @@ function HitProfile:SetOutlineColor(...)
 	self.outline_color = Color(args[1] or 0, args[2] or 0,
 		args[3] or 0, args[4] or 255)
 end
-
 function HitProfile:GetOutlineColor()
 	return self.outline_color or Color(0, 0, 0, 255)
 end
 
-
---[[-------------------------------
+--[[---------------------------------
 _hm.NormalShotProfile()
-	Normal shot profile constructor
-]]---------------------------------
+	- Normal shot profile constructor
+]]-----------------------------------
 function _hm.NormalShotProfile()
 	local this = table.Copy(HitProfile)
 
@@ -56,10 +53,11 @@ function _hm.NormalShotProfile()
 
 	return this
 end
---[[--------------------------------------------------------
+
+--[[-------------------------------
 _hm.HeadShotProfile()
-	Head shot profile constructor - Just changes color/sound
----------------------------------------------------------]]
+	- Head shot profile constructor
+]]---------------------------------
 function _hm.HeadShotProfile()
 	local this = _hm.NormalShotProfile()
 
@@ -68,10 +66,10 @@ function _hm.HeadShotProfile()
 	return this
 end
 
---[[--------------------------------------------------------
+--[[-------------------------------
 _hm.KillShotProfile()
-	Kill shot profile constructor - just changes color/sound
-]]----------------------------------------------------------
+	- Kill shot profile constructor
+]]---------------------------------
 function _hm.KillShotProfile()
 	local this = _hm.NormalShotProfile()
 
