@@ -98,6 +98,29 @@ local function drawBarOutline(offset, length, width, type, outline)
 	end
 end
 
+--[[--------------------------------------------------------------
+whenShouldDrawHit(Number msgLen)
+	Toggles shouldDrawHit boolean when called, also builds part of
+	the HitProfile used in drawHit function
+]]----------------------------------------------------------------
+local function whenShouldDrawHit(msgLen)
+	shouldDrawHit = true
+
+	local dmgAmount = net.ReadInt(6) -- get damage amount
+	wasHeadshot = net.ReadBool() -- get if it was a headshot
+	wasKillshot = net.ReadBool()
+
+	if (not timer.Exists("hitmarker_hitlast")) then
+		timer.Create("hitmarker_hitlast", 0.2, 1, 
+		function()
+			shouldDrawHit = false
+			wasHeadshot = false
+			wasKillShot = false
+		end) 
+	end -- add to config
+end
+net.Receive("hitmarker_when_hit", whenShouldDrawHit)
+
 --[[-----------------
 drawHit(  )
 	draws a hitmarker
@@ -136,6 +159,7 @@ local function drawHit()
 	end
 end
 
+<<<<<<< HEAD
 --[[--------------------------------------------------------------
 whenShouldDrawHit( Number msgLen )
 	Toggles shouldDrawHit boolean when called, also builds part of
@@ -167,6 +191,8 @@ local function whenShouldDrawHit(msgLen)
 end
 net.Receive("hitmarker_when_hit", whenShouldDrawHit)
 
+=======
+>>>>>>> 1f7dff654e0eb269188d1382b6c532681342ab88
 --[[----------------------------------------------------
 plyDraw( )
 	LocalPlayer's draw hook, here we draw the hitmarker
