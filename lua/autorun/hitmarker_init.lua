@@ -35,3 +35,4 @@ hook.Add("Initialize", "hitmarker_load_addon", loadAddon)
 -- net strings
 if (CLIENT) then return end
 util.AddNetworkString "hitmarker_when_hit"
+util.AddNetworkString "hitmarker_open_cfg_frame"

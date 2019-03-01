@@ -27,11 +27,27 @@ end
 hook.Add("EntityTakeDamage", "hitmarker_when_hit", shouldDrawHit)
 
 --[[----------------------------------------------------
-chatOpenConfigFrame( Player ply, string text )
+openConfigFrame( Player ply, string text )
 	- Opens the configuration frame from console command
+	- Can be called via console command or chat message
+	- Returns empty string (for chat hook)
 ]]------------------------------------------------------
 local function openConfigFrame(ply, text)
-	ply:ChatPrint("echo")
+	if (not _hm.cfg.allow_everyone and not _hm.cfg.admin_groups[ply:GetUserGroup()]) then
+		return end
+
+	if (text != _hm.cfg.open_command:lower()) then
+		text = text:lower():sub(2, #text) -- cut off preceding ! or /
+
+		if (text != _hm.cfg.open_command:lower()) then
+			return end
+	end
+
+	net.Start("hitmarker_open_cfg_frame")
+	net.Send(ply)
+	print("sent")
+
+	return ""
 end
-concommand.Add(_hm.cfg.open_command, conOpenConfigFrame)
-hook.Add("PlayerSay", "hitmarker_open_cfg_frame", chatOpenConfigFrame)
+concommand.Add(_hm.cfg.open_command, openConfigFrame)
+hook.Add("PlayerSay", "hitmarker_open_cfg_frame", openConfigFrame)

@@ -8,4 +8,4 @@ local function buildFrame()
 	frame:SetText("")
 	frame:MakePopup()
 end
-buildFrame()
+net.Receive("hitmarker_open_cfg_frame", buildFrame)
