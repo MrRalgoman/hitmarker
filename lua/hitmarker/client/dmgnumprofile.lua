@@ -1,40 +1,31 @@
 -- DmgNumProfile class
 local DmgNumProfile = {}
 
+--[[--------------------------------------------------
+setColor(...)
+	general set color function for getters and setters
+]]----------------------------------------------------
+local function setColor(...)
+	local args = {...}
+
+	if (type(args[1]) == "table") then
+		return Color(args[1].r, args[1].g, args[1].b, args[1].a) end
+
+	return Color(args[1] or 255, args[2] or 255, args[3] or 255, args[4] or 255)
+end
+
 AccessorFunc(DmgNumProfile, "outline", "Outline", FORCE_BOOL)
 AccessorFunc(DmgNumProfile, "size", "Size", FORCE_NUMBER)
 AccessorFunc(DmgNumProfile, "dmg_amount", "DmgAmount", FORCE_NUMBER)
 AccessorFunc(DmgNumProfile, "outline_thickness", "OutlineThickness", FORCE_NUMBER)
 -- get/set color
-function DmgNumProfile:SetColor(...)
-	local args = {...}
-
-	if (type(args[1]) == "table") then
-		self.color = Color(args[1].r, args[1].g, args[1].b, args[1].a)
-		return
-	end
-
-	self.color = Color(args[1] or 255, args[2] or 255,
-		args[3] or 255, args[4] or 255)
-end
-function DmgNumProfile:GetColor()
-	return self.color or Color(255, 255, 255, 255)
-end
+DmgNumProfile.color = Color(255, 255, 255, 255) -- default: white
+function DmgNumProfile:SetColor(...) self.color = setColor({ ... }) end
+function DmgNumProfile:GetColor() return self.color end
 -- get/set outline color
-function DmgNumProfile:SetOutlineColor(...)
-	local args = {...}
-
-	if (table.Count(args) > 0 and type(args[1]) == "table") then
-		self.outline_color = Color(args[1].r, args[1].g, args[1].b, args[1].a)
-		return
-	end
-	
-	self.outline_color = Color(args[1] or 0, args[2] or 0,
-		args[3] or 0, args[4] or 255)
-end
-function DmgNumProfile:GetOutlineColor()
-	return self.outline_color or Color(0, 0, 0, 255)
-end
+DmgNumProfile.outline_color = Color(0, 0, 0, 255) -- default: black
+function DmgNumProfile:SetOutlineColor(...) self.outline_color = setColor({ ... }) end
+function DmgNumProfile:GetOutlineColor() return self.outline_color end
 
 --[[------------------------------------
 DmgNumProfile:Draw( Number x, Number y )

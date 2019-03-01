@@ -2,7 +2,7 @@
 local HitProfile = {}
 
 --[[--------------------------------------------------
-setColor(...)
+setColor( ... )
 	general set color function for getters and setters
 ]]----------------------------------------------------
 local function setColor(...)
@@ -23,28 +23,20 @@ AccessorFunc(HitProfile, "was_headshot", "Headshot", FORCE_BOOL)
 AccessorFunc(HitProfile, "was_kill", "Kill", FORCE_BOOL)
 -- get/set color
 HitProfile.color = Color(255, 255, 255, 255) -- default: white
-function HitProfile:SetColor(...)
-	self.color = setColor({...}) end
-function HitProfile:GetColor()
-	return self.color end
+function HitProfile:SetColor(...) self.color = setColor({...}) end
+function HitProfile:GetColor() return self.color end
 -- get/set headshot color
 HitProfile.headshot_color = Color(235, 244, 66) -- default: yellow
-function HitProfile:SetHeadshotColor(...)
-	self.headshot_color = setColor({...}) end
-function HitProfile:GetHeadshotColor()
-	return self.color end
+function HitProfile:SetHeadshotColor(...) self.headshot_color = setColor({...}) end
+function HitProfile:GetHeadshotColor() return self.color end
 -- get/set kill color
 HitProfile.kill_color = Color(145, 27, 27) -- default: red
-function HitProfile:SetKillColor(...)
-	self.kill_color = setColor({...}) end
-function HitProfile:GetKillColor()
-	return self.color end
+function HitProfile:SetKillColor(...) self.kill_color = setColor({...}) end
+function HitProfile:GetKillColor() return self.color end
 -- get/set outline color
 HitProfile.outline_color = Color(0, 0, 0, 255) -- default: black
-function HitProfile:SetOutlineColor(...)
-	self.outline_color = setColor({...}) end
-function HitProfile:GetOutlineColor()
-	return self.color end
+function HitProfile:SetOutlineColor(...) self.outline_color = setColor({...}) end
+function HitProfile:GetOutlineColor() return self.color end
 
 --[[-------------------------------------------
 HitProfile:Scrape( )
