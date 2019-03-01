@@ -18,6 +18,7 @@ AccessorFunc(DmgNumProfile, "outline", "Outline", FORCE_BOOL)
 AccessorFunc(DmgNumProfile, "size", "Size", FORCE_NUMBER)
 AccessorFunc(DmgNumProfile, "dmg_amount", "DmgAmount", FORCE_NUMBER)
 AccessorFunc(DmgNumProfile, "outline_thickness", "OutlineThickness", FORCE_NUMBER)
+AccessorFunc(DmgNumProfile, "center_offset", "CenterOffset", FORCE_NUMBER)
 -- get/set color
 DmgNumProfile.color = Color(255, 255, 255, 255) -- default: white
 function DmgNumProfile:SetColor(...) self.color = setColor({ ... }) end
@@ -32,13 +33,15 @@ DmgNumProfile:Draw( Number x, Number y )
 	draws the damage
 ]]--------------------------------------
 function DmgNumProfile:Draw(x, y)
-	if (self:GetOutline()) then
-		draw.SimpleTextOutlined(self:GetDmgAmount(), "hitmarker_" .. self:GetSize(),
-			x, y, self:GetColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-			self:GetOutlineThickness(), self:GetOutlineColor())
+	print(math.Clamp(self.size, 14, 50))
+	if (self.outline) then
+		draw.SimpleTextOutlined(self.dmg_amount, "hitmarker_" .. math.Clamp(self.size, 14, 50), -- clamp between lo/hi font sizes
+			self.center_offset + x, self.center_offset - y, self.color, TEXT_ALIGN_CENTER, 
+			TEXT_ALIGN_CENTER, self.outline_thickness, self.outline_color)
 	else
-		draw.SimpleText(self:GetDmgAount(), "hitmarker_" .. self:GetSize(), x, y,
-			self:GetColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(self.dmg_amount, "hitmarker_" .. math.Clamp(self.size, 14, 50), 
+			self.center_offset + x, self.center_offset - y, self.color, TEXT_ALIGN_CENTER, 
+			TEXT_ALIGN_CENTER)
 	end
 end
 
@@ -69,8 +72,7 @@ function _hm.DmgNumProfile(amount)
 	this:SetDmgAmount(amount or 0)
 	this:SetSize(24)
 	this:SetOutlineThickness(2)
-	this:SetColor()
-	this:SetOutlineColor()
+	this:SetCenterOffset(35)
 
 	return this
 end

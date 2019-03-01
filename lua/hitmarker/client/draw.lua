@@ -49,12 +49,12 @@ drawDamage( )
 local function drawDamage()
 	for _, dmgTable in pairs(dmgAmounts) do
 		dmgTable[2] = dmgTable[2] + (1 / 2)
-		local x = dmgTable[2] -- dmgTable[2] is xpos of text
+		local x = dmgTable[2] -- dmgTable[2] is the xpos of text
 
 		-- want it follow a parabolic motion in 2nd quandrant
-		dmgTable[1]:Draw(
-			(ScrW()/2) + 35 + x, -- x
-			(ScrH()/2) - 35 - ((x * x) / 50))  -- y = (x^2) / 50
+		dmgTable[1]:Draw( -- change 35 here to center offset
+			(ScrW()/2) + x, -- x
+			(ScrH()/2) - ((x * x) / 50))  -- y = (x^2) / 50
 	end
 end
 
