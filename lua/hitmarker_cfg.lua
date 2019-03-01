@@ -19,7 +19,7 @@ hitmarker settings if you have allow_everyone set to false.
 ]]--------------------------------------------------------------
 _hm.cfg = _hm.cfg or
 {
-	allowEveryone = true,
+	allow_everyone = true,
 	open_command = "hitmarker",
 	admin_groups = 
 	{

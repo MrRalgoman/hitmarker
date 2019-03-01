@@ -25,3 +25,13 @@ local function shouldDrawHit(victim, damage)
 	end
 end
 hook.Add("EntityTakeDamage", "hitmarker_when_hit", shouldDrawHit)
+
+--[[----------------------------------------------------
+chatOpenConfigFrame( Player ply, string text )
+	- Opens the configuration frame from console command
+]]------------------------------------------------------
+local function openConfigFrame(ply, text)
+	ply:ChatPrint("echo")
+end
+concommand.Add(_hm.cfg.open_command, conOpenConfigFrame)
+hook.Add("PlayerSay", "hitmarker_open_cfg_frame", chatOpenConfigFrame)

@@ -1,41 +1,53 @@
 -- Hit profile class
 local HitProfile = {}
 
+--[[--------------------------------------------------
+setColor(...)
+	general set color function for getters and setters
+]]----------------------------------------------------
+local function setColor(...)
+	local args = {...}
+
+	print(args)
+
+	if (type(args[1]) == "table") then
+		return Color(args[1].r, args[1].g, args[1].b, args[1].a) end
+
+	return Color(args[1] or 255, args[2] or 255, args[3] or 255, args[4] or 255)
+end
+
 AccessorFunc(HitProfile, "width", "Width", FORCE_NUMBER)
 AccessorFunc(HitProfile, "length", "Length", FORCE_NUMBER)
 AccessorFunc(HitProfile, "center_offset", "CenterOffset", FORCE_NUMBER)
 AccessorFunc(HitProfile, "outline_thickness", "OutlineThickness", FORCE_NUMBER)
 AccessorFunc(HitProfile, "outline", "Outline", FORCE_BOOL)
+AccessorFunc(HitProfile, "was_headshot", "Headshot", FORCE_BOOL)
+AccessorFunc(HitProfile, "was_kill", "Kill", FORCE_BOOL)
 -- get/set color
+HitProfile.color = Color(255, 255, 255, 255)
 function HitProfile:SetColor(...)
-	local args = {...}
-
-	if (type(args[1]) == "table") then
-		self.color = Color(args[1].r, args[1].g, args[1].b, args[1].a)
-		return
-	end
-
-	self.color = Color(args[1] or 255, args[2] or 255,
-		args[3] or 255, args[4] or 255)
-end
+	print({...})
+	self.color = setColor({...}) end
 function HitProfile:GetColor()
-	return self.color or Color(255, 255, 255, 255)
-end
+	return self.color end -- default: white
+-- get/set headshot color
+HitProfile.headshot_color = Color(235, 244, 66)
+function HitProfile:SetHeadshotColor(...)
+	self.headshot_color = setColor({...}) end
+function HitProfile:GetHeadshotColor()
+	return self.color end -- default: yellow
+-- get/set kill color
+HitProfile.kill_color = Color(145, 27, 27)
+function HitProfile:SetKillColor(...)
+	self.kill_color = setColor({...}) end
+function HitProfile:GetKillColor()
+	return self.color end -- default: red
 -- get/set outline color
+HitProfile.outline_color = Color(0, 0, 0, 255)
 function HitProfile:SetOutlineColor(...)
-	local args = {...}
-
-	if (table.Count(args) > 0 and type(args[1]) == "table") then
-		self.outline_color = Color(args[1].r, args[1].g, args[1].b, args[1].a)
-		return
-	end
-	
-	self.outline_color = Color(args[1] or 0, args[2] or 0,
-		args[3] or 0, args[4] or 255)
-end
+	self.outline_color = setColor({...}) end
 function HitProfile:GetOutlineColor()
-	return self.outline_color or Color(0, 0, 0, 255)
-end
+	return self.color end -- default: black
 
 --[[-------------------
 HitProfile:Draw( )
@@ -112,14 +124,21 @@ function HitProfile:Draw()
 		upperRight[3].x = upperRight[3].x + self.outline_thickness
 		upperRight[4].y = upperRight[4].y + self.outline_thickness
 
-		surface.SetDrawColor(self:GetOutlineColor())
+		surface.SetDrawColor(self.outline_color)
 		surface.DrawPoly(lowerLeft)
 		surface.DrawPoly(lowerRight)
 		surface.DrawPoly(upperLeft)
 		surface.DrawPoly(upperRight)
 	end
 
-	surface.SetDrawColor(self:GetColor())
+	print("Headshot: " .. tostring(self.was_headshot))
+	print("Kill: " .. tostring(self.was_kill))
+
+	local col = self.color
+	if (self.was_headshot) then col = self.headshot_color end
+	if (self.was_kill) then col = self.kill_color end
+	surface.SetDrawColor(col)
+
 	surface.DrawPoly(lowerRight)
 	surface.DrawPoly(lowerLeft)
 	surface.DrawPoly(upperLeft)
@@ -127,10 +146,10 @@ function HitProfile:Draw()
 end
 
 --[[---------------------------------
-_hm.NormalShotProfile( )
+_hm.HitProfile( )
 	- Normal shot profile constructor
 ]]-----------------------------------
-function _hm.NormalShotProfile()
+function _hm.HitProfile()
 	local this = table.Copy(HitProfile)
 
 	this:SetWidth(1.5) -- 1.5
@@ -138,31 +157,8 @@ function _hm.NormalShotProfile()
 	this:SetCenterOffset(6) -- 6
 	this:SetOutlineThickness(2)
 	this:SetOutline(true)
-	this:SetColor() -- default white
-
-	return this
-end
-
---[[-------------------------------
-_hm.HeadShotProfile( )
-	- Head shot profile constructor
-]]---------------------------------
-function _hm.HeadShotProfile()
-	local this = _hm.NormalShotProfile()
-
-	this:SetColor(235, 244, 66) -- yellow
-
-	return this
-end
-
---[[-------------------------------
-_hm.KillShotProfile( )
-	- Kill shot profile constructor
-]]---------------------------------
-function _hm.KillShotProfile()
-	local this = _hm.NormalShotProfile()
-
-	this:SetColor(145, 27, 27) -- dark red
+	this:SetHeadshot(false)
+	this:SetKill(false)
 
 	return this
 end
