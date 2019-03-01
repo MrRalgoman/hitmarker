@@ -14,7 +14,7 @@ local function loadAddon()
 		AddCSLuaFile "hitmarker_cfg.lua"
 		AddCSLuaFile "hitmarker/client/hitprofile.lua"
 		AddCSLuaFile "hitmarker/client/dmgnumprofile.lua"
-		AddCSLuaFile "hitmarker/client/hitmarker.lua"
+		AddCSLuaFile "hitmarker/client/draw.lua"
 		AddCSLuaFile "hitmarker/client/vgui/frame.lua"
 		AddCSLuaFile "hitmarker/client/vgui/profile_pnl.lua"
 
@@ -25,7 +25,7 @@ local function loadAddon()
 		include "hitmarker_cfg.lua"
 		include "hitmarker/client/hitprofile.lua"
 		include "hitmarker/client/dmgnumprofile.lua"
-		include "hitmarker/client/hitmarker.lua"
+		include "hitmarker/client/draw.lua"
 		include "hitmarker/client/vgui/frame.lua"
 		include "hitmarker/client/vgui/profile_pnl.lua"
 	end

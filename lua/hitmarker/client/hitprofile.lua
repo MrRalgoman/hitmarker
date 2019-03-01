@@ -8,8 +8,6 @@ setColor(...)
 local function setColor(...)
 	local args = {...}
 
-	print(args)
-
 	if (type(args[1]) == "table") then
 		return Color(args[1].r, args[1].g, args[1].b, args[1].a) end
 
@@ -24,77 +22,85 @@ AccessorFunc(HitProfile, "outline", "Outline", FORCE_BOOL)
 AccessorFunc(HitProfile, "was_headshot", "Headshot", FORCE_BOOL)
 AccessorFunc(HitProfile, "was_kill", "Kill", FORCE_BOOL)
 -- get/set color
-HitProfile.color = Color(255, 255, 255, 255)
+HitProfile.color = Color(255, 255, 255, 255) -- default: white
 function HitProfile:SetColor(...)
-	print({...})
 	self.color = setColor({...}) end
 function HitProfile:GetColor()
-	return self.color end -- default: white
+	return self.color end
 -- get/set headshot color
-HitProfile.headshot_color = Color(235, 244, 66)
+HitProfile.headshot_color = Color(235, 244, 66) -- default: yellow
 function HitProfile:SetHeadshotColor(...)
 	self.headshot_color = setColor({...}) end
 function HitProfile:GetHeadshotColor()
-	return self.color end -- default: yellow
+	return self.color end
 -- get/set kill color
-HitProfile.kill_color = Color(145, 27, 27)
+HitProfile.kill_color = Color(145, 27, 27) -- default: red
 function HitProfile:SetKillColor(...)
 	self.kill_color = setColor({...}) end
 function HitProfile:GetKillColor()
-	return self.color end -- default: red
+	return self.color end
 -- get/set outline color
-HitProfile.outline_color = Color(0, 0, 0, 255)
+HitProfile.outline_color = Color(0, 0, 0, 255) -- default: black
 function HitProfile:SetOutlineColor(...)
 	self.outline_color = setColor({...}) end
 function HitProfile:GetOutlineColor()
-	return self.color end -- default: black
+	return self.color end
+
+--[[-------------------------------------------
+HitProfile:Scrape( )
+	- returns a condensed table containing only
+	pertinent HitProfile data
+]]---------------------------------------------
+function HitProfile:Scrape()
+	local data = { }
+
+	return data
+end
 
 --[[-------------------
-HitProfile:Draw( )
+HitProfile:Draw( Number x, Number y )
 	- Draws a hitmarker
 ]]---------------------
-function HitProfile:Draw()
-	local scrW, scrH = ScrW(), ScrH()
-
+function HitProfile:Draw(x, y)
 	local lowerRight = {
-		{ x = (scrW / 2) + self.center_offset + self.length + self.width/2,
-		  y = (scrH / 2) + self.center_offset + self.length - self.width/2 },
-		{ x = (scrW / 2) + self.center_offset + self.length - self.width/2,
-		  y = (scrH / 2) + self.center_offset + self.length + self.width/2 },
-		{ x = (scrW / 2) + self.center_offset - self.width - self.width/2,
-		  y = (scrH / 2) + self.center_offset - self.width + self.width/2 },
-		{ x = (scrW / 2) + self.center_offset - self.width + self.width/2,
-		  y = (scrH / 2) + self.center_offset - self.width - self.width/2 }
+		{ x = x + self.center_offset + self.length + self.width/2,
+		  y = y + self.center_offset + self.length - self.width/2 },
+		{ x = x + self.center_offset + self.length - self.width/2,
+		  y = y + self.center_offset + self.length + self.width/2 },
+		{ x = x + self.center_offset - self.width - self.width/2,
+		  y = y + self.center_offset - self.width + self.width/2 },
+		{ x = x + self.center_offset - self.width + self.width/2,
+		  y = y + self.center_offset - self.width - self.width/2 }
 	}
 	local lowerLeft = {
-		{ x = (scrW / 2) - self.center_offset + self.width + self.width/2,
-		  y = (scrH / 2) + self.center_offset - self.width + self.width/2 },
-		{ x = (scrW / 2) - self.center_offset - self.length + self.width/2,
-		  y = (scrH / 2) + self.center_offset + self.length + self.width/2 },
-		{ x = (scrW / 2) - self.center_offset - self.length - self.width/2,
-		  y = (scrH / 2) + self.center_offset + self.length - self.width/2 },
-		{ x = (scrW / 2) - self.center_offset + self.width - self.width/2,
-		  y = (scrH / 2) + self.center_offset - self.width - self.width/2 }
+		{ x = x - self.center_offset + self.width + self.width/2,
+		  y = y + self.center_offset - self.width + self.width/2 },
+		{ x = x - self.center_offset - self.length + self.width/2,
+		  y = y + self.center_offset + self.length + self.width/2 },
+		{ x = x - self.center_offset - self.length - self.width/2,
+		  y = y + self.center_offset + self.length - self.width/2 },
+		{ x = x - self.center_offset + self.width - self.width/2,
+		  y = y + self.center_offset - self.width - self.width/2 }
 	}
 	local upperLeft = {
-		{ x = (scrW / 2) - self.center_offset - self.length - self.width/2,
-		  y = (scrH / 2) - self.center_offset - self.length + self.width/2 },
-		{ x = (scrW / 2) - self.center_offset - self.length + self.width/2,
-		  y = (scrH / 2) - self.center_offset - self.length - self.width/2 },
-		{ x = (scrW / 2) - self.center_offset + self.width + self.width/2,
-		  y = (scrH / 2) - self.center_offset + self.width - self.width/2 },
-		{ x = (scrW / 2) - self.center_offset + self.width - self.width/2,
-		  y = (scrH / 2) - self.center_offset + self.width + self.width/2 }
+		{ x = x - self.center_offset - self.length - self.width/2,
+		  y = y - self.center_offset - self.length + self.width/2 },
+		{ x = x - self.center_offset - self.length + self.width/2,
+		  y = y - self.center_offset - self.length - self.width/2 },
+		{ x = x - self.center_offset + self.width + self.width/2,
+		  y = y - self.center_offset + self.width - self.width/2 },
+		{ x = x - self.center_offset + self.width - self.width/2,
+		  y = y - self.center_offset + self.width + self.width/2 }
 	}
 	local upperRight = {
-		{ x = (scrW / 2) + self.center_offset - self.width - self.width/2,
-		  y = (scrH / 2) - self.center_offset + self.width - self.width/2 },
-		{ x = (scrW / 2) + self.center_offset + self.length - self.width/2,
-		  y = (scrH / 2) - self.center_offset - self.length - self.width/2 },
-		{ x = (scrW / 2) + self.center_offset + self.length + self.width/2,
-		  y = (scrH / 2) - self.center_offset - self.length + self.width/2 },
-		{ x = (scrW / 2) + self.center_offset - self.width + self.width/2,
-		  y = (scrH / 2) - self.center_offset + self.width + self.width/2 }
+		{ x = x + self.center_offset - self.width - self.width/2,
+		  y = y - self.center_offset + self.width - self.width/2 },
+		{ x = x + self.center_offset + self.length - self.width/2,
+		  y = y - self.center_offset - self.length - self.width/2 },
+		{ x = x + self.center_offset + self.length + self.width/2,
+		  y = y - self.center_offset - self.length + self.width/2 },
+		{ x = x + self.center_offset - self.width + self.width/2,
+		  y = y - self.center_offset + self.width + self.width/2 }
 	}
 	
 	draw.NoTexture()
@@ -130,9 +136,6 @@ function HitProfile:Draw()
 		surface.DrawPoly(upperLeft)
 		surface.DrawPoly(upperRight)
 	end
-
-	print("Headshot: " .. tostring(self.was_headshot))
-	print("Kill: " .. tostring(self.was_kill))
 
 	local col = self.color
 	if (self.was_headshot) then col = self.headshot_color end

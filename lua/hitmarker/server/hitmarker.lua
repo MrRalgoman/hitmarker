@@ -1,8 +1,8 @@
---[[--------------------------------------------------------
+--[[---------------------------------------------------------
 shouldDrawHit(Entity victim, CTakeDamageInfo damage)
-	tracks when we should be drawing a hit for which client,
-	notifies which client should draw a hit
-]]----------------------------------------------------------
+	- Tracks when we should be drawing a hit for which client
+	- Notifies which client should draw a hit
+]]-----------------------------------------------------------
 local function shouldDrawHit(victim, damage)
 	local attacker = damage:GetAttacker() -- get attacker
 	

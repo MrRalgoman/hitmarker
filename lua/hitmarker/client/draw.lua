@@ -1,5 +1,5 @@
---[[ global file vars to track when we should actually
- 	 be drawing a hitmarker and damage done ]]
+--[[ global file vars 
+	- track when we should actually be drawing a hitmarker and damage done ]]
 local shouldDrawHit = false
 local dmgAmounts = {} -- will keep track of current dmg amounts to display
 
@@ -65,7 +65,7 @@ plyDraw( )
 ]]-----------------------------------------------------
 local function plyDraw()
 	if (shouldDrawHit) then
-		LocalPlayer()._hitProfile:Draw() end
+		LocalPlayer()._hitProfile:Draw(ScrW()/2, ScrH()/2) end
 
 	drawDamage()
 end
