@@ -54,6 +54,7 @@ HitProfile:Draw( Number x, Number y )
 	- Draws a hitmarker
 ]]---------------------
 function HitProfile:Draw(x, y)
+	-- need to figure out how to do this iterably
 	local lowerRight = {
 		{ x = x + self.center_offset + self.length + self.width/2,
 		  y = y + self.center_offset + self.length - self.width/2 },
