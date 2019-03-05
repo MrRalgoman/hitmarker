@@ -1,6 +1,6 @@
 --[[ global file vars
 	- for ease of changing lengths/widths ]]
-local frame_w = 600 -- frame width
+local frame_w = 800 -- frame width
 local frame_h = 500 -- frame height
 local tabs_h = 35 -- height of tabs panel
 local tabs_o = 25 -- tabs panel offset
