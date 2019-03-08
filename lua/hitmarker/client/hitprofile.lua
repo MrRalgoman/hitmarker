@@ -1,19 +1,6 @@
 -- Hit profile class
 local HitProfile = {}
 
---[[--------------------------------------------------
-setColor( ... )
-	general set color function for getters and setters
-]]----------------------------------------------------
-local function setColor(...)
-	local args = {...}
-
-	if (type(args[1]) == "table") then
-		return Color(args[1].r, args[1].g, args[1].b, args[1].a) end
-
-	return Color(args[1] or 255, args[2] or 255, args[3] or 255, args[4] or 255)
-end
-
 AccessorFunc(HitProfile, "width", "Width", FORCE_NUMBER)
 AccessorFunc(HitProfile, "length", "Length", FORCE_NUMBER)
 AccessorFunc(HitProfile, "center_offset", "CenterOffset", FORCE_NUMBER)
@@ -23,25 +10,24 @@ AccessorFunc(HitProfile, "was_headshot", "Headshot", FORCE_BOOL)
 AccessorFunc(HitProfile, "was_kill", "Kill", FORCE_BOOL)
 -- get/set color
 HitProfile.color = Color(255, 255, 255, 255) -- default: white
-function HitProfile:SetColor(...) self.color = setColor({...}) end
+function HitProfile:SetColor(col) self.color = col end
 function HitProfile:GetColor() return self.color end
 -- get/set headshot color
 HitProfile.headshot_color = Color(235, 244, 66) -- default: yellow
-function HitProfile:SetHeadshotColor(...) self.headshot_color = setColor({...}) end
+function HitProfile:SetHeadshotColor(col) self.headshot_color = col end
 function HitProfile:GetHeadshotColor() return self.color end
 -- get/set kill color
 HitProfile.kill_color = Color(145, 27, 27) -- default: red
-function HitProfile:SetKillColor(...) self.kill_color = setColor({...}) end
+function HitProfile:SetKillColor(col) self.kill_color = col end
 function HitProfile:GetKillColor() return self.color end
 -- get/set outline color
 HitProfile.outline_color = Color(0, 0, 0, 255) -- default: black
-function HitProfile:SetOutlineColor(...) self.outline_color = setColor({...}) end
+function HitProfile:SetOutlineColor(col) self.outline_color = col end
 function HitProfile:GetOutlineColor() return self.color end
 
 --[[-------------------------------------------
 HitProfile:Scrape( )
-	- returns a condensed table containing only
-	pertinent HitProfile data
+	- returns a condensed table containing HitProfile data
 ]]---------------------------------------------
 function HitProfile:Scrape()
 	local data = { }
@@ -148,10 +134,10 @@ _hm.HitProfile( )
 function _hm.HitProfile()
 	local this = table.Copy(HitProfile)
 
-	this:SetWidth(1.5) -- 1.5
-	this:SetLength(10) -- 5
-	this:SetCenterOffset(6) -- 6
-	this:SetOutlineThickness(2)
+	this:SetWidth(2) -- 2
+	this:SetLength(5) -- 5
+	this:SetCenterOffset(8) -- 8
+	this:SetOutlineThickness(2) -- 2
 	this:SetOutline(true)
 	this:SetHeadshot(false)
 	this:SetKill(false)
