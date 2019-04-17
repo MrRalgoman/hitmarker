@@ -14,13 +14,20 @@ configuration gui. With the default option, the chat command to
 open will be /hitmarker or !hitmarker, the console command
 will just be hitmarker.
 
+hitmarker_last - This sets how long in seconds a hitmarker will last
+on a players screen after creation (the player hit an entity).
+
 admin_groups - groups added here will be allowed to change the
 hitmarker settings if you have allow_everyone set to false.
 ]]--------------------------------------------------------------
 _hm.cfg = _hm.cfg or
 {
 	allow_everyone = true,
+
 	open_command = "hitmarker",
+
+	hitmarker_last = 0.2,
+
 	admin_groups = 
 	{
 		["superadmin"] = true,
