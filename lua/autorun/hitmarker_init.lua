@@ -7,7 +7,7 @@ loadAddon()
 	- Builds the global table for the addon
 -----------------------------------------------------------]]
 local function loadAddon()
-	_hm = _hm or {}
+	_hm = _hm or { }
 
 	if (SERVER) then
 		AddCSLuaFile "hitmarker/client/fonts.lua"
