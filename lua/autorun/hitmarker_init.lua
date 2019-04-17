@@ -12,7 +12,7 @@ local function loadAddon()
 	if (SERVER) then
 		AddCSLuaFile "hitmarker/client/fonts.lua"
 		AddCSLuaFile "hitmarker_cfg.lua"
-		AddCSLuaFile "hitmarker/client/hitprofile.lua"
+		AddCSLuaFile "hitmarker/client/hit.lua"
 		AddCSLuaFile "hitmarker/client/dmgnumprofile.lua"
 		AddCSLuaFile "hitmarker/client/draw.lua"
 		AddCSLuaFile "hitmarker/client/vgui/frame.lua"
@@ -24,7 +24,7 @@ local function loadAddon()
 	elseif (CLIENT) then
 		include "hitmarker/client/fonts.lua"
 		include "hitmarker_cfg.lua"
-		include "hitmarker/client/hitprofile.lua"
+		include "hitmarker/client/hit.lua"
 		include "hitmarker/client/dmgnumprofile.lua"
 		include "hitmarker/client/draw.lua"
 		include "hitmarker/client/vgui/frame.lua"
