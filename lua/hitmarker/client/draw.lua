@@ -1,7 +1,7 @@
 --[[ global file vars 
 	- track when we should actually be drawing a hitmarker and damage done ]]
 local shouldDrawHit = false
-local dmgAmounts = {} -- will keep track of current dmg amounts to display
+local dmgAmounts = { } -- will keep track of current dmg amounts to display
 
 --[[
 loadProfiles( )
@@ -18,17 +18,21 @@ whenShouldDrawHit( Number msgLen )
 	Toggles shouldDrawHit boolean when called, also builds part of
 	the HitProfile used in drawHit function
 ]]
-local function whenShouldDrawHit(msgLen)
+local function whenShouldDrawHit( msgLen )
 	shouldDrawHit = true
+	LocalPlayer()._hit:SetWasHeadshot( net.ReadBool() )
+	LocalPlayer()._hit:SetWasKill( net.ReadBool() )
 
-	if (not timer.Exists("hitmarker_hitlast")) then
-		timer.Create("hitmarker_hitlast", _hm.cfg.hitmarker_last, 1, -- add to config
+	if ( not timer.Exists( "hitmarker_hitlast" ) ) then
+		timer.Create( "hitmarker_hitlast", _hm.cfg.hitmarker_last, 1,
 		function()
 			shouldDrawHit = false
-		end)
+			LocalPlayer()._hit:SetWasHeadshot( false )
+			LocalPlayer()._hit:SetWasKill( false )
+		end )
 	end
 end
-net.Receive("hitmarker_when_hit", whenShouldDrawHit)
+net.Receive( "hitmarker_when_hit", whenShouldDrawHit )
 
 --[[---------------------
 drawDamage( )
@@ -54,7 +58,7 @@ local function plyDraw()
 	if ( shouldDrawHit ) then
 		LocalPlayer()._hit:Draw() end
 
-	LocalPlayer()._hit:DrawMarker()
+	--LocalPlayer()._hit:DrawMarker()
 	-- print( " Hello World!" )
 
 	-- drawDamage()

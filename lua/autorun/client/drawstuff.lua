@@ -74,6 +74,6 @@ local function drawHitmarker( centerO, length, width, outlineWidth )
 end
 
 local function draw( )
-	drawHitmarker( 100, 25, 20, 2 )
+	--drawHitmarker( 100, 25, 20, 2 )
 end
 hook.Add( "HUDPaint", "my_hud_paint_hook", draw )

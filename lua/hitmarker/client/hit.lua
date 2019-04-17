@@ -8,9 +8,10 @@ local Hit = { }
 
 	Hit:UpdateCenter( ) 				Updates the center of the hitmarker
 
-	Hit:CreateArm( Number length, Number width, Boolean dir ) 
+	Hit:CreateArm( Number midX, Number midY, Number length, Number width, Boolean dir ) 
 										(INTERNAL) creates a hitmarker arm for draw hitmarker function, the
-										direction determins whether the polygon is SE -> NW (false) or SW -> NE (true)
+										direction determins whether the polygon is SE -> NW (false) or
+										SW -> NE (true)
 
 	Hit:DrawMarker( ) 					Draws the hitmarker
 
@@ -50,12 +51,12 @@ AccessorFunc( Hit, "_w", "Width", FORCE_NUMBER )
 AccessorFunc( Hit, "_centerO", "CenterOffset", FORCE_NUMBER )
 AccessorFunc( Hit, "_outW", "OutlineWidth", FORCE_NUMBER )
 AccessorFunc( Hit, "_headshot", "WasHeadshot", FORCE_BOOL )
-AccessorFunc( Hit, "_kill", "WasKill", "WasKill", FORCE_BOOL )
+AccessorFunc( Hit, "_kill", "WasKill", FORCE_BOOL )
 Hit._x = ScrW() / 2
 Hit._y = ScrH() / 2
 Hit._color = Color( 255, 255, 255, 255 )
 Hit._headCol = Color( 239, 224, 4, 255 ) -- yellow
-Hit._killCol = Color( 153, 35, 35, 255 ) -- read
+Hit._killCol = Color( 153, 35, 35, 255 ) -- red
 Hit._outlineColor = Color( 0, 0, 0, 255 )
 
 function Hit:SetColor( col )
@@ -88,25 +89,25 @@ function Hit:UpdateCenter()
 end
 
 --[[
-Hit:CreateArm( Number length, Number width, Boolean dir )
+Hit:CreateArm( Number midX, Number midY, Number length, Number width, Boolean dir )
 	(INTERNAL) creates a hitmarker arm for draw hitmarker function, the
-	direction determins whether the polygon is SE -> NW or SW -> NE 
+	direction determins whether the polygon is SE -> NW (false) or SW -> NE (true) 
 ]]
-function Hit:CreateArm( length, width, dir )
+function Hit:CreateArm( midX, midY, length, width, dir )
 	-- https://gyazo.com/2b394e4526ffd97be8396113cb0ed4b5
 	if (dir) then
 		return {
-			{ x = self._x + self._centerO - length - width, y = self._y + self._centerO + length - width },
-			{ x = self._x + length - width, y = self._y - length - width },
-			{ x = self._x + length + width, y = self._y - length + width },
-			{ x = self._x - length + width, y = self._y + length + width }
+			{ x = midX - length - width, y = midY + length - width },
+			{ x = midX + length - width, y = midY - length - width },
+			{ x = midX + length + width, y = midY - length + width },
+			{ x = midX - length + width, y = midY + length + width }
 		}
 	else
 		return {
-			{ x = self._x - length - width, y = self._y - length + width },
-			{ x = self._x - length + width, y = self._y - length - width },
-			{ x = self._x + length + width, y = self._y + length - width },
-			{ x = self._x + length - width, y = self._y + length + width }
+			{ x = midX - length - width, y = midY - length + width },
+			{ x = midX - length + width, y = midY - length - width },
+			{ x = midX + length + width, y = midY + length - width },
+			{ x = midX + length - width, y = midY + length + width }
 		}
 	end
 end
@@ -118,21 +119,26 @@ Hit:DrawMarker( )
 function Hit:DrawMarker()
 	local arms, outlineArms =
 	{
-		[1] = self:CreateArm( self._l, self._w, true ),
-		[2] = self:CreateArm( self._l, self._w, false ),
-		[3] = self:CreateArm( self._l, self._w, false ),
-		[4] = self:CreateArm( self._l, self._w, true ) 
+		[1] = self:CreateArm( self._x - self._centerO, self._y + self._centerO, self._l, self._w, true ),
+		[2] = self:CreateArm( self._x - self._centerO, self._y - self._centerO, self._l, self._w, false ),
+		[3] = self:CreateArm( self._x + self._centerO, self._y + self._centerO, self._l, self._w, false ),
+		[4] = self:CreateArm( self._x + self._centerO, self._y - self._centerO, self._l, self._w, true ) 
 	}
 
 	if ( 0 < self._outW ) then
+		local length, width = self._l + self._outW, self._w + self._outW
+
 		outlineArms =
 		{
-
-			[1] = self:CreateArm( true ),
-			[2] = self:CreateArm(),
-			[3] = self:CreateArm(),
-			[4] = self:CreateArm( true ) 
+			[1] = self:CreateArm( self._x - self._centerO, self._y + self._centerO, length, width, true ),
+			[2] = self:CreateArm( self._x - self._centerO, self._y - self._centerO, length, width, false ),
+			[3] = self:CreateArm( self._x + self._centerO, self._y + self._centerO, length, width, false ),
+			[4] = self:CreateArm( self._x + self._centerO, self._y - self._centerO, length, width, true ) 
 		}
+		
+		surface.SetDrawColor( self:GetOutlineColor() )
+		for i = 1, #outlineArms do
+			surface.DrawPoly( outlineArms[i] ) end
 	end
 	
 	local col = self:GetColor()
@@ -151,12 +157,12 @@ _hm.Hit( )
 	Hit object constructor
 ]]
 function _hm.Hit()
-	local this = table.Copy(Hit)
+	local this = table.Copy( Hit )
 
 	this:SetLength( 7 )
 	this:SetWidth( 2 )
 	this:SetCenterOffset( 20 )
-	this:SetOutlineWidth( 0 )
+	this:SetOutlineWidth( 2 )
 	this:SetColor( Color( 255, 255, 255, 255 ) )
 	this:SetHeadshotColor( Color( 239, 224, 4, 255 ) )
 	this:SetKillColor( Color( 153, 35, 35, 255 ) )
