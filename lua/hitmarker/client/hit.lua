@@ -142,14 +142,13 @@ function Hit:DrawMarker()
 	end
 	
 	local col = self:GetColor()
+
 	if ( self:GetWasHeadshot() ) then col = self:GetHeadshotColor() end
 	if ( self:GetWasKill() ) then col = self:GetKillColor() end
 
 	surface.SetDrawColor( col )
 	for i = 1, #arms do
 		surface.DrawPoly( arms[i] ) end
-
-	print( " Hello World!" )
 end
 
 --[[

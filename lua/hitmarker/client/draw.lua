@@ -15,29 +15,36 @@ LocalPlayer()._hit = _hm.Hit() -- delete this shit later
 
 --[[
 whenShouldDrawHit( Number msgLen )
-	Toggles shouldDrawHit boolean when called, also builds part of
-	the HitProfile used in drawHit function
+	Toggles shouldDrawHit boolean when called
 ]]
 local function whenShouldDrawHit( msgLen )
 	shouldDrawHit = true
-	LocalPlayer()._hit:SetWasHeadshot( net.ReadBool() )
-	LocalPlayer()._hit:SetWasKill( net.ReadBool() )
+	local dmgAmount = net.ReadInt( 6 )
+	local wasHeadshot = net.ReadBool()
+	local wasKillshot = net.ReadBool()
 
-	if ( not timer.Exists( "hitmarker_hitlast" ) ) then
-		timer.Create( "hitmarker_hitlast", _hm.cfg.hitmarker_last, 1,
-		function()
-			shouldDrawHit = false
-			LocalPlayer()._hit:SetWasHeadshot( false )
-			LocalPlayer()._hit:SetWasKill( false )
-		end )
+	if ( timer.Exists( "hitmarker_hitlast" ) ) then
+		LocalPlayer()._hit:SetWasHeadshot( false )
+		LocalPlayer()._hit:SetWasKill( false )
+		timer.Destroy( "hitmarker_hitlast" )
 	end
+
+	LocalPlayer()._hit:SetWasHeadshot( wasHeadshot )
+	LocalPlayer()._hit:SetWasKill( wasKillshot )
+
+	timer.Create( "hitmarker_hitlast", 0.2, 1, -- _hm.cfg.hitmarker_last
+	function()
+		shouldDrawHit = false
+		LocalPlayer()._hit:SetWasHeadshot( false )
+		LocalPlayer()._hit:SetWasKill( false )
+	end )
 end
 net.Receive( "hitmarker_when_hit", whenShouldDrawHit )
 
---[[---------------------
+--[[
 drawDamage( )
 	draws the damage done
-]]-----------------------
+]]
 local function drawDamage()
 	for _, dmgTable in pairs(dmgAmounts) do
 		dmgTable[2] = dmgTable[2] + (1 / 2)
@@ -56,7 +63,7 @@ plyDraw( )
 ]]
 local function plyDraw()
 	if ( shouldDrawHit ) then
-		LocalPlayer()._hit:Draw() end
+		LocalPlayer()._hit:DrawMarker() end
 
 	--LocalPlayer()._hit:DrawMarker()
 	-- print( " Hello World!" )
