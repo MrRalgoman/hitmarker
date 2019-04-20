@@ -45,9 +45,7 @@ local function openConfigFrame(ply, text)
 
 	net.Start("hitmarker_open_cfg_frame")
 	net.Send(ply)
-	print("sent")
 
 	return ""
 end
-concommand.Add(_hm.cfg.open_command, openConfigFrame)
 hook.Add("PlayerSay", "hitmarker_open_cfg_frame", openConfigFrame)

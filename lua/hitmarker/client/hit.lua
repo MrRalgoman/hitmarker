@@ -80,15 +80,6 @@ function Hit:GetOutlineColor( )
 	return self._outlineColor or Color( 0, 0, 0, 255 ) end
 
 --[[
-Hit:UpdateCenter( )
-	updates the center of the hitmarker
-]]
-function Hit:UpdateCenter()
-	self._x = ScrW() / 2
-	self._y = ScrW() / 2
-end
-
---[[
 Hit:CreateArm( Number midX, Number midY, Number length, Number width, Boolean dir )
 	(INTERNAL) creates a hitmarker arm for draw hitmarker function, the
 	direction determins whether the polygon is SE -> NW (false) or SW -> NE (true) 
@@ -116,13 +107,14 @@ end
 Hit:DrawMarker( )
 	Draws the marker
 ]]
-function Hit:DrawMarker()
+function Hit:DrawMarker( centerX, centerY )
+	print( " Hello World!" )
 	local arms, outlineArms =
 	{
-		[1] = self:CreateArm( self._x - self._centerO, self._y + self._centerO, self._l, self._w, true ),
-		[2] = self:CreateArm( self._x - self._centerO, self._y - self._centerO, self._l, self._w, false ),
-		[3] = self:CreateArm( self._x + self._centerO, self._y + self._centerO, self._l, self._w, false ),
-		[4] = self:CreateArm( self._x + self._centerO, self._y - self._centerO, self._l, self._w, true ) 
+		[1] = self:CreateArm( centerX - self._centerO, centerY + self._centerO, self._l, self._w, true ),
+		[2] = self:CreateArm( centerX - self._centerO, centerY - self._centerO, self._l, self._w, false ),
+		[3] = self:CreateArm( centerX + self._centerO, centerY + self._centerO, self._l, self._w, false ),
+		[4] = self:CreateArm( centerX + self._centerO, centerY - self._centerO, self._l, self._w, true ) 
 	}
 
 	if ( 0 < self._outW ) then
@@ -130,10 +122,10 @@ function Hit:DrawMarker()
 
 		outlineArms =
 		{
-			[1] = self:CreateArm( self._x - self._centerO, self._y + self._centerO, length, width, true ),
-			[2] = self:CreateArm( self._x - self._centerO, self._y - self._centerO, length, width, false ),
-			[3] = self:CreateArm( self._x + self._centerO, self._y + self._centerO, length, width, false ),
-			[4] = self:CreateArm( self._x + self._centerO, self._y - self._centerO, length, width, true ) 
+			[1] = self:CreateArm( centerX - self._centerO, centerY + self._centerO, length, width, true ),
+			[2] = self:CreateArm( centerX - self._centerO, centerY - self._centerO, length, width, false ),
+			[3] = self:CreateArm( centerX + self._centerO, centerY + self._centerO, length, width, false ),
+			[4] = self:CreateArm( centerX + self._centerO, centerY - self._centerO, length, width, true ) 
 		}
 		
 		surface.SetDrawColor( self:GetOutlineColor() )

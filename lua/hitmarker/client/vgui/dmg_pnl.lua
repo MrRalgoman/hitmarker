@@ -9,7 +9,10 @@ function dmgCfg:Init()
 	local parent = self:GetParent()
 
 	self:Dock( FILL )
-	self:Show( false )
+	self:Hide()
+
+	local label = vgui.Create( "DLabel", self )
+	label:SetText( "DamageConfigPanel" )
 end
 
 vgui.Register( "DamageConfigPanel", dmgCfg, "DPanel" )
