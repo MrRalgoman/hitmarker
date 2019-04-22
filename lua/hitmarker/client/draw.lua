@@ -66,7 +66,6 @@ local function plyDraw()
 		LocalPlayer()._hit:DrawMarker() end
 
 	--LocalPlayer()._hit:DrawMarker()
-	-- print( " Hello World!" )
 
 	-- drawDamage()
 end

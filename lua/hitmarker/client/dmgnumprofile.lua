@@ -33,7 +33,6 @@ DmgNumProfile:Draw( Number x, Number y )
 	draws the damage
 ]]--------------------------------------
 function DmgNumProfile:Draw(x, y)
-	print(math.Clamp(self.size, 14, 50))
 	if (self.outline) then
 		draw.SimpleTextOutlined(self.dmg_amount, "hitmarker_" .. math.Clamp(self.size, 14, 50), -- clamp between lo/hi font sizes
 			self.center_offset + x, self.center_offset - y, self.color, TEXT_ALIGN_CENTER, 

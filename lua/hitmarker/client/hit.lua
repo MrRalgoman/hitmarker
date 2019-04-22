@@ -4,46 +4,45 @@ local Hit = { }
 --[[
 	Hit object interface
 
-	_hm.Hit( ) 							Object constructor
+	_hm.Hit( ) --> Object constructor
 
-	Hit:UpdateCenter( ) 				Updates the center of the hitmarker
+	Hit:UpdateCenter( ) --> Updates the center of the hitmarker
 
 	Hit:CreateArm( Number midX, Number midY, Number length, Number width, Boolean dir ) 
-										(INTERNAL) creates a hitmarker arm for draw hitmarker function, the
-										direction determins whether the polygon is SE -> NW (false) or
-										SW -> NE (true)
+	--> (INTERNAL) creates a hitmarker arm for draw hitmarker function, the direction determines whether
+	the polygon is SE -> NW (false) or SW -> NE (true)
 
-	Hit:DrawMarker( ) 					Draws the hitmarker
+	Hit:DrawMarker( ) --> Draws the hitmarker
 
-	Hit:GetLength( ) 					Get the length of the hitmarker
-	Hit:SetLength( Number len ) 		Set the length of the hitmarker
+	Hit:GetLength( ) -------------> Get the length of the hitmarker
+	Hit:SetLength( Number len ) --> Set the length of the hitmarker
 	
-	Hit:GetWidth( ) 					Get the width of the hitmarker
-	Hit:SetWidth( Number len ) 			Set the width of the hitmarker
+	Hit:GetWidth( ) -------------> Get the width of the hitmarker
+	Hit:SetWidth( Number len ) --> Set the width of the hitmarker
 
-	Hit:GetCenterOffset( ) 				Get the center offset of the hitmarker
-	Hit:SetCenterOffset( Number len ) 	Set the center offset of the hitmarker
+	Hit:GetCenterOffset( ) -------------> Get the center offset of the hitmarker
+	Hit:SetCenterOffset( Number len ) --> Set the center offset of the hitmarker
 	
-	Hit:GetOutlineWidth( ) 				Get the outline width of the hitmarker
-	Hit:SetOutlineWidth( Number len ) 	Set the outline width of the hitmarker
+	Hit:GetOutlineWidth( ) -------------> Get the outline width of the hitmarker
+	Hit:SetOutlineWidth( Number len ) --> Set the outline width of the hitmarker
 
-	Hit:GetWasHeadshot( )				Get if the last hit was a headshot
-	Hit:SetWasHeadshot( Boolean bool ) 	Set if the last hit was a headshot
+	Hit:GetWasHeadshot( ) ---------------> Get if the last hit was a headshot
+	Hit:SetWasHeadshot( Boolean bool ) --> Set if the last hit was a headshot
 
-	Hit:GetWasKill( )					Get if the last hit was a kill
-	Hit:SetWasKill( Boolean bool )		Set if the last hit was a kill
+	Hit:GetWasKill( ) ---------------> Get if the last hit was a kill
+	Hit:SetWasKill( Boolean bool ) --> Set if the last hit was a kill
 
-	Hit:GetColor( ) 					Get the color of the hitmarker
-	Hit:SetColor( Color col ) 			Set the color of the hitmarker
+	Hit:GetColor( ) ------------> Get the color of the hitmarker
+	Hit:SetColor( Color col ) --> Set the color of the hitmarker
 	
-	Hit:GetOutlineColor( ) 				Get the outline color of the hitmarker
-	Hit:SetOutlineColorColor( Color col ) Set the outline color of the hitmarker
+	Hit:GetHeadshotColor( ) ------------> Get the headshot color of the hitmarker
+	Hit:SetHeadshotColor( Color col ) --> Set the headshot color of the hitmarker
 
-	Hit:GetHeadshotColor( ) 			Get the headshot color of the hitmarker
-	Hit:SetHeadshotColor( Color col ) 	Set the headshot color of the hitmarker
+	Hit:GetKillColor( ) ------------> Get the kill color of the hitmarker
+	Hit:SetKillColor( Color col ) --> Set the kill color of the hitmarker
 
-	Hit:GetKillColor( ) 				Get the kill color of the hitmarker
-	Hit:SetKillColor( Color col ) 		Set the kill color of the hitmarker
+	Hit:GetOutlineColor( ) -----------------> Get the outline color of the hitmarker
+	Hit:SetOutlineColorColor( Color col ) --> Set the outline color of the hitmarker
 ]]
 
 AccessorFunc( Hit, "_l", "Length", FORCE_NUMBER )
@@ -52,8 +51,6 @@ AccessorFunc( Hit, "_centerO", "CenterOffset", FORCE_NUMBER )
 AccessorFunc( Hit, "_outW", "OutlineWidth", FORCE_NUMBER )
 AccessorFunc( Hit, "_headshot", "WasHeadshot", FORCE_BOOL )
 AccessorFunc( Hit, "_kill", "WasKill", FORCE_BOOL )
-Hit._x = ScrW() / 2
-Hit._y = ScrH() / 2
 Hit._color = Color( 255, 255, 255, 255 )
 Hit._headCol = Color( 239, 224, 4, 255 ) -- yellow
 Hit._killCol = Color( 153, 35, 35, 255 ) -- red
@@ -108,7 +105,6 @@ Hit:DrawMarker( )
 	Draws the marker
 ]]
 function Hit:DrawMarker( centerX, centerY )
-	print( " Hello World!" )
 	local arms, outlineArms =
 	{
 		[1] = self:CreateArm( centerX - self._centerO, centerY + self._centerO, self._l, self._w, true ),

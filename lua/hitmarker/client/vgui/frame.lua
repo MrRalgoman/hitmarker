@@ -32,8 +32,6 @@ tabs:BuildButtons( )
 function tabs:BuildButtons()
 	local n = table.Count( self.tabs )
 
-	PrintTable( self.tabs )
-
 	for i = 1, n do
 		local tab = vgui.Create( "DButton", self )
 		tab:SetText( self.tabs[i].name )
@@ -59,12 +57,10 @@ function tabs:Init()
 	self:SetTall( parent:GetTall() / 16 )
 	self:InvalidateParent( true )
 
-	print( " Parent:GetWide() = " .. parent:GetWide() )
-
 	self.tabs =
 	{
 		[1] = { panel = vgui.Create( "HitmarkerConfigPanel", parent ), name = "Hitmarker Settings",
-			openFunc = function () self:OpenHitmarkerPanel() end },
+			openFunc = function() self:OpenHitmarkerPanel() end },
 		[2] = { panel = vgui.Create( "DamageConfigPanel", parent ), name = "Damage Settings",
 			openFunc = function() self:OpenDamagePanel() end }
 	}
