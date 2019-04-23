@@ -2,6 +2,54 @@
 local hitForm = { }
 
 --[[
+hitForm:BuildForm( )
+	builds the hitmarker settings
+]]
+function hitForm:BuildForm()
+	local Hit = LocalPlayer()._hit
+
+	PrintTable( Hit )
+
+	local bools =
+	{
+		[1] = { text = "Enable Hitmarker:", default = true }
+	}
+
+	local sliders =
+	{
+		[1] = { text = "Length:", min = 1, max = 100, default = Hit:GetLength() },
+		[2] = { text = "Width:", min = 1, max = 100, default = Hit:GetWidth() },
+		[3] = { text = "Center Offset:", min = 1, max = 100, default = Hit:GetCenterOffset() },
+		[4] = { text = "Outline Width:", min = 1, max = 100, default = Hit:GetOutlineWidth() }
+	}
+
+	local n = #bools + #sliders
+
+	for i = 1, #sliders do
+		local holder = vgui.Create( "DPanel", self )
+		holder:Dock( TOP )
+		holder:SetTall( self:GetTall() / n )
+		holder:InvalidateParent( true )
+
+		local slider = vgui.Create( "DNumSlider", holder )
+		slider:SetSize( holder:GetWide() * ( 9 / 10 ), holder:GetTall() * ( 2 / 3 ) )
+		slider:Center()
+		slider:SetValue( sliders[i].default )
+		slider:SetText( sliders[i].text )
+		slider:SetMin( sliders[i].min )
+		slider:SetMax( sliders[i].max )
+		slider:SetDecimals( 0 )
+	end
+
+	for i = 1, #bools do
+		local holder = vgui.Create( "DPanel", self )
+		holder:Dock( TOP )
+		holder:SetTall( self:GetTall() / n )
+		holder:InvalidateParent( true )
+	end
+end
+
+--[[
 hitForm:Init( )
 	initializes the hit form panel
 ]]
@@ -11,13 +59,14 @@ function hitForm:Init()
 	self:Dock( LEFT )
 	self:SetWide( parent:GetWide() / 2 )
 	self:InvalidateParent( true )
+
+	self:BuildForm()
 end
 
 vgui.Register( "HitmarkerHitForm", hitForm, "DPanel" )
 
 -- color form tabs panel
 local colFormTabs = { }
-
 
 --[[
 BuildTabs( )
@@ -61,6 +110,17 @@ function colFormTabs:Init()
 	local function openTab( index )
 		for i = 1, 4 do
 			tabPnls[i]:Hide() end
+		
+		if ( index == 2 ) then
+			Hit:SetWasKill( false )
+			Hit:SetWasHeadshot( true )
+		elseif ( index == 3 ) then
+			Hit:SetWasHeadshot( false )
+			Hit:SetWasKill( true )
+		else
+			Hit:SetWasHeadshot( false )
+			Hit:SetWasKill( false )
+		end
 
 		tabPnls[index]:Show()
 	end
@@ -78,7 +138,10 @@ function colFormTabs:Init()
 			updateFunc = function( c ) Hit:SetKillColor( c ) end, default = Hit:GetKillColor() },
 		[4] = { name = "Outline Color", confirmMessage = "Change Outline Color", 
 			panel = tabPnls[4], openFunc = function() openTab( 4 ) end,
-			updateFunc = function( c ) Hit:SetOutlineColor( c ) end, default = Hit:GetOutlineColor }
+			updateFunc = function( c ) Hit:SetOutlineColor( c ) end, default = Hit:GetOutlineColor() }
+	}
+
+	openTab( 1 ) -- by default show the 1st tab
 end
 
 vgui.Register( "HitmarkerColorFormTabs", colFormTabs, "DPanel" )
@@ -110,7 +173,7 @@ function colForm:BuildTabPanels( tabPnl )
 		local colorPicker = vgui.Create( "DColorMixer", pnl )
 		colorPicker:Dock( FILL )
 		colorPicker:InvalidateParent( true )
-		colorPicker:SetColor( Hit:)
+		colorPicker:SetColor( tabPnl._tabs[i].default )
 
 		function saveButton:DoClick()
 			tabPnl._tabs[i].updateFunc( colorPicker:GetColor() )
@@ -131,6 +194,7 @@ function colForm:Init()
 
 	local tabPnl = vgui.Create( "HitmarkerColorFormTabs", self )
 	self:BuildTabPanels( tabPnl )
+	tabPnl:BuildTabs()
 end
 
 vgui.Register( "HitmarkerColorForm", colForm, "DPanel" )
