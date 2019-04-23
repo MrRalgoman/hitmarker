@@ -2,6 +2,7 @@
 	- track when we should actually be drawing a hitmarker and damage done ]]
 local shouldDrawHit = false
 local dmgAmounts = { } -- will keep track of current dmg amounts to display
+local scrW, scrH = ScrW(), ScrH()
 
 --[[
 loadProfiles( )
@@ -63,7 +64,7 @@ plyDraw( )
 ]]
 local function plyDraw()
 	if ( shouldDrawHit ) then
-		LocalPlayer()._hit:DrawMarker() end
+		LocalPlayer()._hit:DrawMarker( scrW / 2, scrH / 2 ) end
 
 	--LocalPlayer()._hit:DrawMarker()
 

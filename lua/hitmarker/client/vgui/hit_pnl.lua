@@ -8,7 +8,10 @@ hitForm:BuildForm( )
 function hitForm:BuildForm()
 	local Hit = LocalPlayer()._hit
 
-	PrintTable( Hit )
+	print( "Length: " .. Hit:GetLength() )
+	print( "Width: " .. Hit:GetWidth() )
+	print( "Center Offset: " .. Hit:GetCenterOffset() )
+	print( "Outline Width: " .. Hit:GetOutlineWidth() )
 
 	local bools =
 	{
@@ -17,10 +20,14 @@ function hitForm:BuildForm()
 
 	local sliders =
 	{
-		[1] = { text = "Length:", min = 1, max = 100, default = Hit:GetLength() },
-		[2] = { text = "Width:", min = 1, max = 100, default = Hit:GetWidth() },
-		[3] = { text = "Center Offset:", min = 1, max = 100, default = Hit:GetCenterOffset() },
-		[4] = { text = "Outline Width:", min = 1, max = 100, default = Hit:GetOutlineWidth() }
+		[1] = { text = "Length:", min = 1, max = 20, initial = Hit:GetLength(),
+			updateFunc = function( n ) LocalPlayer()._hit:SetLength( n ) end },
+		[2] = { text = "Width:", min = 1, max = 15, initial = Hit:GetWidth(),
+			updateFunc = function( n ) LocalPlayer()._hit:SetWidth( n ) end },
+		[3] = { text = "Center Offset:", min = 1, max = 50, initial = Hit:GetCenterOffset(),
+			updateFunc = function( n ) LocalPlayer()._hit:SetCenterOffset( n ) end },
+		[4] = { text = "Outline Width:", min = 0, max = 5, initial = Hit:GetOutlineWidth(),
+			updateFunc = function( n ) LocalPlayer()._hit:SetOutlineWidth( n ) end },
 	}
 
 	local n = #bools + #sliders
@@ -34,11 +41,14 @@ function hitForm:BuildForm()
 		local slider = vgui.Create( "DNumSlider", holder )
 		slider:SetSize( holder:GetWide() * ( 9 / 10 ), holder:GetTall() * ( 2 / 3 ) )
 		slider:Center()
-		slider:SetValue( sliders[i].default )
 		slider:SetText( sliders[i].text )
 		slider:SetMin( sliders[i].min )
 		slider:SetMax( sliders[i].max )
 		slider:SetDecimals( 0 )
+		slider:SetValue( sliders[i].initial )
+
+		function slider:OnValueChanged( value )
+			sliders[i].updateFunc( value ) end
 	end
 
 	for i = 1, #bools do
